@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Index</title>
+        <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $.ajax('/query/').then(
+                    function(data) {
+                        alert(data)
+                    },
+                    function() {
+
+                    }
+                )
+            })
+        </script>
+    </head>
+    <body>
+        <img src="{{qr_img}}" alt="qr_img">
+    </body>
+</html>
