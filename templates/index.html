@@ -3,20 +3,20 @@
     <head>
         <title>Index</title>
         <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
         <script>
-            $(document).ready(function() {
-                $.ajax('/query/').then(
-                    function(data) {
-                        alert(data)
-                    },
-                    function() {
-
-                    }
-                )
-            })
+            window.config = {
+                qr_id: '{{qr_id}}',
+                redirect_uri: '{{redirect_uri}}',
+            }
         </script>
+        <script src="{{url_for('static', filename='index.js')}}"></script>
     </head>
     <body>
         <img src="{{qr_img}}" alt="qr_img">
+        <div>{{qr_id}}</div>
+        <div id="wx_after_scan" style="display: none">Click LOGIN button on wechat to login.</div>
+        <div id="wx_after_cancel" style="display: none">You clicked cancel for this login action.</div>
+        <div id="login_url"></div>
     </body>
 </html>
