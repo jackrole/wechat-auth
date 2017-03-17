@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}qr{% endblock title %}
+
+{% block js %}
+<script>
+    window.config = {
+        query_uri: '{{url_for("query")}}',
+    }
+</script>
+<script src="{{url_for('static', filename='index.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+<img src="{{qr_img}}" alt="qr_img">
+<div id="wx_after_scan" style="display: none">
+    <h4>Scan successed!</h4>
+    <p>Click [LOGIN] button on your wechat to login.</p>
+</div>
+<div id="wx_after_cancel" style="display: none">
+    <h4>You clicked [CANCEL] for this login action.</h4>
+</div>
+<div id="login_url">
+    <h4></h4>
+    <p></p>
+</div>
+{% endblock content %}

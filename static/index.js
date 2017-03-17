@@ -3,10 +3,11 @@
 
     $(document).ready(function() {
 
-        function queryQrStatue(qrId, last) {
+        function queryQrStatue(last) {
+            var loginOnBrowser = $('#login_on_browser').is(':checked')
             $.ajax({
                 type: 'GET',
-                url: '/query/' + qrId + '/' + (last ? last + '/' : ''),
+                url: config.queryUri + (last ? last + '/?lob=' + loginOnBrowser : ''),
                 dataType: 'script',
                 cache: !1,
             }).then(
@@ -14,23 +15,22 @@
                     console.log(data)
                     var errCode = window.wx_errcode
                     switch (errCode) {
-                        case 405:
-                            $('#login_url').html(login_url)
-                            // window.location.href = login_url
-                            break
-                        case 404:
-                            $('#wx_after_scan').show()
-                            setTimeout(queryQrStatue, 100, qrId, errCode)
-                            break
-                        case 403:
-                            $('#wx_after_cancel').show()
-                            break
-                        case 402:
-                        case 500:
-                            window.location.reload()
-                            break;
-                        case 408:
-                            setTimeout(queryQrStatue, 2e3, qrId)
+                    case 405:
+                        window.location.href = login_url
+                        break
+                    case 404:
+                        $('#wx_after_scan').show()
+                        setTimeout(queryQrStatue, 100, errCode)
+                        break
+                    case 403:
+                        $('#wx_after_cancel').show()
+                        break
+                    case 402:
+                    case 500:
+                        window.location.reload()
+                        break;
+                    case 408:
+                        setTimeout(queryQrStatue, 2e3)
                     }
                 },
                 function() {
@@ -38,7 +38,7 @@
                 }
             )
         }
-        queryQrStatue(config.qrId)
+        queryQrStatue()
 
     })
 })(window, window.jQuery, window.config);
