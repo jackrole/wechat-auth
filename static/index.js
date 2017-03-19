@@ -4,10 +4,9 @@
     $(document).ready(function() {
 
         function queryQrStatue(last) {
-            var loginOnBrowser = $('#login_on_browser').is(':checked')
             $.ajax({
                 type: 'GET',
-                url: config.queryUri + (last ? last + '/?lob=' + loginOnBrowser : ''),
+                url: config.queryUri + (last ? last : ''),
                 dataType: 'script',
                 cache: !1,
             }).then(

@@ -5,7 +5,7 @@
 {% block js %}
 <script>
     window.config = {
-        query_uri: '{{url_for("query")}}',
+        query_uri: '{{url_for("query", qr_id=qr_id)}}',
     }
 </script>
 <script src="{{url_for('static', filename='index.js')}}"></script>

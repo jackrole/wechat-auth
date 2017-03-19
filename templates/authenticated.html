@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h1>Login successed!</h1>
+    <div>
+        <p>Query the following link to get the authentication tokens.</p>
+    </div>
+    <div>
+        <a href="{{link}}">{{link}}</a>
+    </div>
+    <div>
+        <pre>
+            <code>
+                import requests
+                session = requests.Session()
+                session = requests.get('{{link}}', headers={'host': '{{host}}')
+            </code>
+        </pre>
+    </div>
+</div>
+{% endblock content %}
