@@ -1,5 +1,6 @@
 # pylint: disable=C0111
 
+from urlparse import urlparse
 from uuid import uuid4
 
 class UserConfig(object):
@@ -7,8 +8,18 @@ class UserConfig(object):
 
     def __init__(self, user_key):
         self.key = user_key
-        self.host = None
-        self.unset()
+        self.request_host = None
+
+        # for wechat app
+        self.appid = ''
+        self.redirect_uri = ''
+        self.state = ''
+        # for wechat-auth
+        self.login_on_browser = False
+        # informations of the site to login
+        self.target_site_host = None
+        self.target_site_homepage = None
+        self.target_site_auth_info = None
 
     @property
     def qr_url(self):
@@ -32,7 +43,7 @@ class UserConfig(object):
 
     @property
     def is_authenticated(self):
-        return self.wechat_auth is not None
+        return self.target_site_auth_info is not None
 
     def set(self, **kwargs):
         for key in kwargs:
@@ -47,13 +58,25 @@ class UserConfig(object):
         # for wechat-auth
         self.login_on_browser = False
         # wechat authcation information
-        self.wechat_auth = None
+        self.target_site_auth_info = None
+        self.target_site_homepage = None
+        self.target_site_auth_info = None
 
     def set_auth(self, auth_info):
-        self.wechat_auth = auth_info
+        self.target_site_auth_info = auth_info
 
     def unset_auth(self):
-        self.wechat_auth = None
+        self.target_site_auth_info = None
+
+    def get_target_site_host(self):
+        if self.target_site_host:
+            return self.target_site_host
+        return urlparse(self.redirect_uri).netloc
+
+    def get_target_site_homepage(self):
+        if self.target_site_homepage:
+            return self.target_site_homepage
+        return 'http://%s' % self.get_target_site_host()
 
     def print_info(self):
         print (

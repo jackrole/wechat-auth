@@ -34,18 +34,16 @@ def require_user_config(func):
 def index():
     user_config = g.user_config
 
-    print request.headers['host']
-    if not user_config.host:
-        user_config.set(host=request.headers['host'])
+    if not user_config.request_host:
+        user_config.set(request_host=request.headers['host'])
 
     if request.method == 'GET':
         if user_config.is_authenticated:
             path = url_for('auth', user_key=user_config.key)
-            host = urlparse(user_config.redirect_uri).netloc
             return render_template(
                 'authenticated.html',
-                host=host,
-                link=urljoin('http://' + user_config.host, path),
+                host=user_config.get_target_site_host(),
+                link=urljoin('http://' + user_config.request_host, path),
             )
         elif user_config.is_configurated:
             qr_page = requests.get(user_config.qr_url).text
@@ -119,11 +117,42 @@ def query(qr_id, last=None):
                 state=('&state=%s' % state) if state else '',
             )
 
+            # print '***  %s ***' % login_url
+            # return resp_text
+
             # request the login url in backend.
-            if not login_on_browser:
-                login_resp = requests.get(login_url, allow_redirects=False)
-                user_config.set_auth(dict(login_resp.cookies))
+            # pylint: disable=C0301
+            if (not login_on_browser) or False:  # False is for debug
+                session = requests.Session()
+                headers = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Encoding': 'gzip, deflate, sdch',
+                    'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6,ja;q=0.4',
+                    'Host': 'www.xuetangx.com',
+                    'Pragma': 'no-cache',
+                    'Referer': 'http://www.xuetangx.com/',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+                }
+                get = lambda url: session.get(url, headers=headers)
+                get(user_config.get_target_site_homepage())
+                get(login_url)
+                get('http://www.xuetangx.com/api/web/signin/')
+                print get('http://www.xuetangx.com/header_ajax').text
+
+                user_config.set_auth(dict(session.cookies))
                 login_url = '/'
+
+                from datetime import datetime
+                stringify_cookie = lambda x: ';'.join('='.join([k, v]) for k, v in x.items())
+                with open(
+                    datetime.strftime(datetime.now(), '%y-%m-%d %H%M%S') + '.html',
+                    'w'
+                    ) as f:
+                    login_resp = requests.get(
+                        'http://www.xuetangx.com/dashboard/',
+                        headers={'cookie': stringify_cookie(user_config.target_site_auth_info)}
+                    )
+                    f.write(login_resp.text.encode('utf-8'))
 
             return (
                 "{resp_text}window.login_url='{login_url}'"
@@ -138,23 +167,9 @@ def query(qr_id, last=None):
 @app.route('/auth/<user_key>')
 def auth(user_key):
     user_config = CONFIG_SET.get(user_key)
-    response = make_response(jsonify(user_config.wechat_auth))
-    for key, value in user_config.wechat_auth.items():
+    response = make_response(jsonify(user_config.target_site_auth_info))
+    for key, value in user_config.target_site_auth_info.items():
         response.set_cookie(key, value, domain=urlparse(user_config.redirect_uri).netloc)
-    return response
-
-
-@app.route('/cookie1/')
-def get_cookie1():
-    response = make_response('get cookie1')
-    response.set_cookie('cookie1', 'cookie1 value')
-    return response
-
-
-@app.route('/cookie2/')
-def get_cookie2():
-    response = make_response('get cookie2')
-    response.set_cookie('cookie2', 'cookie2 value', domain='www.qichacha.com')
     return response
 
 
