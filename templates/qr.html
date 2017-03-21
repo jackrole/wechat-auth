@@ -8,11 +8,15 @@
         query_uri: '{{url_for("query", qr_id=qr_id)}}',
     }
 </script>
-<script src="{{url_for('static', filename='index.js')}}"></script>
+<script src="{{url_for('static', filename='index.jss')}}"></script>
 {% endblock %}
 
 {% block content %}
-<img src="{{qr_img}}" alt="qr_img">
+<img class="qr-img" src="{{qr_img}}" alt="qr_img">
+<div id="wx_default_tip">
+    <h4>Use wechat scan to login.</h4>
+    <p>{{site_name}}</p>
+</div>
 <div id="wx_after_scan" style="display: none">
     <h4>Scan successed!</h4>
     <p>Click [LOGIN] button on your wechat to login.</p>
