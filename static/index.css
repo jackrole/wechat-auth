@@ -10,7 +10,7 @@ a {
     color: #f5bb69;
 }
 
-a:hover {
+a:hover, a:focus {
     color: #ec971f;
 }
 
@@ -35,6 +35,11 @@ a:hover {
     }
 }
 
+.form-control:focus {
+    border-color: #f0ad4e;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(204,173,78,.6);
+}
+
 .radio-set .radio {
     display: inline-block;
 }
@@ -47,6 +52,50 @@ a:hover {
 .btn {
     padding-right: 50px;
     padding-left: 50px;
+}
+
+input[type=radio] {
+    -webkit-appearance: none;
+}
+
+input[type='radio']:after {
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: #d1d3d1;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+}
+
+input[type='radio']:checked:after {
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    top: -2px;
+    left: -1px;
+    position: relative;
+    background-color: #ffa500;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+}
+
+input[type='radio']:focus {
+    outline: none;
+}
+
+.commit-area {
+    margin-top: 20px;
+}
+
+.btn:focus {
+    outline-color: #f0ad4e;
 }
 
 .qr-img {

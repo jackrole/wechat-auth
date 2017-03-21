@@ -8,7 +8,7 @@
         query_uri: '{{url_for("query", qr_id=qr_id)}}',
     }
 </script>
-<script src="{{url_for('static', filename='index.jss')}}"></script>
+<script src="{{url_for('static', filename='index.js')}}"></script>
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,8 @@
     <p>Click [LOGIN] button on your wechat to login.</p>
 </div>
 <div id="wx_after_cancel" style="display: none">
-    <h4>You clicked [CANCEL] for this login action.</h4>
+    <h4>Login cancel!</h4>
+    <p>Scan the QR code to do login again.</p>
 </div>
 <div id="login_url">
     <h4></h4>

@@ -18,11 +18,14 @@
                         window.location.href = login_url
                         break
                     case 404:
+                        $('#wx_default_tip, #wx_after_cancel').hide()
                         $('#wx_after_scan').show()
                         setTimeout(queryQrStatue, 100, errCode)
                         break
                     case 403:
+                        $('#wx_after_scan').hide()
                         $('#wx_after_cancel').show()
+                        setTimeout(queryQrStatue, 100, errCode)
                         break
                     case 402:
                     case 500:
