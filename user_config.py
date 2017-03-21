@@ -3,39 +3,43 @@
 from urlparse import urlparse
 from uuid import uuid4
 
+
 class UserConfig(object):
     wechat_login_domain = 'https://open.weixin.qq.com'
 
-    def __init__(self, user_key):
-        self.key = user_key
+    def __init__(self):
+        self.key = str(uuid4()).replace('-', '')
         self.request_host = None
 
         # for wechat app
-        self.appid = ''
-        self.redirect_uri = ''
-        self.state = ''
-        # for wechat-auth
-        self.login_on_browser = False
+        self.appid = None
+        self.redirect_uri = None
+        self.state = None
+        # for wechat-auth(current app)
+        self.auth_method = None
         # informations of the site to login
+        self.target_site_session = None
+        self.target_site_name = None
         self.target_site_host = None
         self.target_site_homepage = None
+        self.target_site_login_uri = None
         self.target_site_auth_info = None
 
-    @property
-    def qr_url(self):
-        return (
-            '{wechat_login_domain}/connect/qrconnect'
-            '?appid={appid}'
-            '&redirect_uri={redirect_uri}'
-            '&state={state}'
-            '&response_type=code'
-            '&scope=snsapi_login'
-        ).format(
-            wechat_login_domain=self.wechat_login_domain,
-            appid=self.appid,
-            redirect_uri=self.redirect_uri,
-            state=self.state,
-        )
+    # @property
+    # def qr_url(self):
+    #     return (
+    #         '{wechat_login_domain}/connect/qrconnect'
+    #         '?appid={appid}'
+    #         '&redirect_uri={redirect_uri}'
+    #         '&state={state}'
+    #         '&response_type=code'
+    #         '&scope=snsapi_login'
+    #     ).format(
+    #         wechat_login_domain=self.wechat_login_domain,
+    #         appid=self.appid,
+    #         redirect_uri=self.redirect_uri,
+    #         state=self.state,
+    #     )
 
     @property
     def is_configurated(self):
@@ -50,22 +54,24 @@ class UserConfig(object):
             if hasattr(self, key):
                 setattr(self, key, kwargs[key])
 
-    def unset(self):
+    def clear(self):
         # for wechat app
-        self.appid = ''
-        self.redirect_uri = ''
-        self.state = ''
-        # for wechat-auth
-        self.login_on_browser = False
-        # wechat authcation information
-        self.target_site_auth_info = None
+        self.appid = None
+        self.redirect_uri = None
+        self.state = None
+        # for wechat-auth(current app)
+        self.auth_method = None
+        # informations of the site to login
+        self.target_site_name = None
+        self.target_site_host = None
         self.target_site_homepage = None
+        self.target_site_login_uri = None
         self.target_site_auth_info = None
 
     def set_auth(self, auth_info):
         self.target_site_auth_info = auth_info
 
-    def unset_auth(self):
+    def clear_auth(self):
         self.target_site_auth_info = None
 
     def get_target_site_host(self):
@@ -84,13 +90,13 @@ class UserConfig(object):
             'appid={appid}\n'
             'redirect_uri={redirect_uri}\n'
             'state={state}\n'
-            'login_on_browser={login_on_browser}\n'
+            'auth_method={auth_method}\n'
             '------------------'
         ).format(
             appid=self.appid,
             redirect_uri=self.redirect_uri,
             state=self.state,
-            login_on_browser=str(self.login_on_browser),
+            auth_method=self.auth_method,
         )
 
 
@@ -100,11 +106,9 @@ class ConfigSet(object):
 
     def get(self, user_key):
         config_set = self.__config_set
-        if not user_key:
-            user_key = str(uuid4()).replace('-', '')
         if user_key in config_set:
             return config_set[user_key]
         else:
-            config = UserConfig(user_key)
-            config_set[user_key] = config
+            config = UserConfig()
+            config_set[config.key] = config
             return config

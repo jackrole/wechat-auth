@@ -4,20 +4,24 @@
 <div>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
-            <ul class="flashes">
-                {% for message in messages %}
-                    <li>{{message}}</li>
-                {% endfor %}
-            </ul>
+            <p>{{messages[0]}}</p>
         {% endif %}
+        <form action="" method="post">
+            <h2>Input your QR login url:</h2>
+            {% if messages %}
+                <input class="form-control" type="text" name="qr-url" value="{{messages[1]}}" autocomplete="off">
+            {% else %}
+                <input class="form-control" type="text" name="qr-url" value="" autocomplete="off">
+            {% endif %}
+            <div>
+                <select class="form-control" name="auth-method">
+                    {% for key, value in auth_methods.items()  %}
+                        <option value="{{key}}">{{value}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
     {% endwith %}
-    <form action="" method="post">
-        <h2>Input your QR login url:</h2>
-        <input class="form-control" type="text" name="qr-url" value="">
-        <div>
-            <input id="login-on-browser" type="checkbox" name="login-on-browser" />Login on browser
-        </div>
-        <button class="btn btn-primary" type="submit">Submit</button>
-    </form>
 </div>
 {% endblock content %}
