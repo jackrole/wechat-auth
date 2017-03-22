@@ -25,6 +25,10 @@ a:hover, a:focus {
     background: transparent;
 }
 
+.breadcrumb > li + li:before {
+    color: #f0ad4e;
+}
+
 .content {
     margin-top: 30px;
 }
@@ -49,12 +53,17 @@ a:hover, a:focus {
     margin-left: 50px;
 }
 
+.text-danger {
+    color: #f0ad4e;
+}
+
 .btn {
     padding-right: 50px;
     padding-left: 50px;
 }
 
 input[type=radio] {
+    /*-moz-appearance: none;*/
     -webkit-appearance: none;
 }
 

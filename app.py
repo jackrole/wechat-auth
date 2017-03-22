@@ -1,4 +1,18 @@
+# -*- coding: utf-8 -*-
 # pylint: disable=C0103, C0111, I0011
+
+"""
+    wechat-auth
+    ~~~~~~~~~~~
+
+    A microframework helps coder to login into most popular
+    website more conveniently, through wechat login entrance.
+
+    :copyright: (c) 2017 by JX Tang.
+    :license: BSD, see LICENSE for more details.
+"""
+
+__version__ = '0.12'
 
 from collections import OrderedDict
 from functools import wraps
@@ -79,6 +93,7 @@ def index():
                 'authenticated.html',
                 host=user_config.get_target_site_host(),
                 link=urljoin('http://' + user_config.request_host, path),
+                site_name=user_config.target_site_name,
             )
         elif user_config.target_site_login_uri:
             '''
@@ -112,7 +127,7 @@ def index():
             )
             qr_id = qr_img.split('/')[-1]
             site_name = re.findall(WECHAT_SITENAME_REGEX, qr_page)[0]
-            user_config.set(site_name=site_name)
+            user_config.set(target_site_name=site_name)
             return render_template(
                 'qr.html', qr_img=qr_img, qr_id=qr_id, site_name=site_name,
             )
